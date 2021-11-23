@@ -7,7 +7,7 @@ import (
 )
 
 func part1() {
-	array := read.ReadIntArray("./input.txt")
+	array := read.ReadIntArrayByLine("./input.txt")
 	for x := 0; x < len(array); x++ {
 		value1 := array[x]
 		for y := (x + 1); y < len(array); y++ {
@@ -20,7 +20,7 @@ func part1() {
 }
 
 func part2() {
-	array := read.ReadIntArray("./input.txt")
+	array := read.ReadIntArrayByLine("./input.txt")
 	for x := 0; x < len(array); x++ {
 		value1 := array[x]
 		for y := (x + 1); y < len(array); y++ {
