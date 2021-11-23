@@ -44,7 +44,7 @@ func ReadStrArrayByLine(filepath string) []string {
 		cur := scanner.Text()
 		strarray = append(strarray, cur)
 	}
-	var test []rune
+
 	return strarray
 }
 
