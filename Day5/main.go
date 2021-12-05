@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/SotoDucani/AoC2021/internal/read"
 )
@@ -184,10 +185,18 @@ func part2() {
 		}
 	}
 
-	fmt.Printf("Part 2: %v", counter)
+	fmt.Printf("Part 2: %v\n", counter)
 }
 
 func main() {
+	p1b := time.Now()
 	part1()
+	mid := time.Now()
 	part2()
+	p2a := time.Now()
+	part1Time := mid.Sub(p1b)
+	part2Time := p2a.Sub(mid)
+	out1 := time.Time{}.Add(part1Time)
+	out2 := time.Time{}.Add(part2Time)
+	fmt.Printf("Part 1 Time: %#v\nPart 2 Time: %#v\n", out1.Format("Jan _2 15:04:05.000"), out2.Format("Jan _2 15:04:05.000"))
 }
