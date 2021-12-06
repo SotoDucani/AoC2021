@@ -28,15 +28,6 @@ func parseInputFor2() map[string]int {
 		parsed = append(parsed, convInt)
 	}
 	newMap := make(map[string]int)
-	newMap["0"] = 0
-	newMap["1"] = 0
-	newMap["2"] = 0
-	newMap["3"] = 0
-	newMap["4"] = 0
-	newMap["5"] = 0
-	newMap["6"] = 0
-	newMap["7"] = 0
-	newMap["8"] = 0
 	for _, value := range parsed {
 		newMap[strconv.Itoa(value)] = newMap[strconv.Itoa(value)] + 1
 	}
@@ -70,7 +61,7 @@ func part1() {
 
 func part2() {
 	parsed := parseInputFor2()
-	fmt.Printf("Initial state: %#v\n", parsed)
+	//fmt.Printf("Initial state: %#v\n", parsed)
 
 	days := 256
 	for d := 1; d <= days; d++ {
