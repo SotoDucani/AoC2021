@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/SotoDucani/AoC2021/internal/read"
 )
@@ -60,7 +61,7 @@ func part1() {
 		}
 	}
 
-	fmt.Printf("%v, %v\n", lowestPosition, lowestValue)
+	fmt.Printf("Part 1 - Position: %v Fuel Total: %v\n", lowestPosition, lowestValue)
 }
 
 func part2() {
@@ -92,16 +93,24 @@ func part2() {
 	lowestPosition := 0
 
 	for k, v := range positionCost {
-		fmt.Printf("Key: %v Value: %v\n", k, v)
+		//fmt.Printf("Key: %v Value: %v\n", k, v)
 		if v == lowestValue {
 			lowestPosition = k
 		}
 	}
 
-	fmt.Printf("%v, %v\n", lowestPosition, lowestValue)
+	fmt.Printf("Part 2 - Position: %v Fuel Total: %v\n", lowestPosition, lowestValue)
 }
 
 func main() {
+	p1b := time.Now()
 	part1()
+	mid := time.Now()
 	part2()
+	p2a := time.Now()
+	part1Time := mid.Sub(p1b)
+	part2Time := p2a.Sub(mid)
+	out1 := time.Time{}.Add(part1Time)
+	out2 := time.Time{}.Add(part2Time)
+	fmt.Printf("Part 1 Time: %#v\nPart 2 Time: %#v\n", out1.Format("Jan _2 15:04:05.000000"), out2.Format("Jan _2 15:04:05.000000"))
 }
