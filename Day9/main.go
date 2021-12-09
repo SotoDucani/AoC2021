@@ -34,21 +34,19 @@ func part1() [][]int {
 			cur := input[y][x]
 			//fmt.Printf("Current: %d\n", cur)
 			testUp, testDown, testRight, testLeft := true, true, true, true
+
 			//edge cases, lol, get it?
-			if x == 0 {
-				//fmt.Printf("testLeft false\n")
+			switch x {
+			case 0:
 				testLeft = false
-			}
-			if x == len(input[0])-1 {
-				//fmt.Printf("testRight false\n")
+			case len(input[0]) - 1:
 				testRight = false
 			}
-			if y == 0 {
-				//fmt.Printf("testUp false\n")
+
+			switch y {
+			case 0:
 				testUp = false
-			}
-			if y == len(input)-1 {
-				//fmt.Printf("testDown false\n")
+			case len(input) - 1:
 				testDown = false
 			}
 
@@ -96,93 +94,89 @@ func part1() [][]int {
 	return lowSpots
 }
 
-func searchBasin(curLocation []int) [][]int {
-	input := parseInput()
+func searchBasin(input [][]int, curLocation []int, searchedLocations map[string]int) [][]int {
 
 	var basinMembers [][]int
 
 	x := curLocation[0]
 	y := curLocation[1]
 	cur := input[y][x]
+	mapString := fmt.Sprintf("%d,%c", x, y)
+	searchedLocations[mapString] = searchedLocations[mapString] + 1
 
 	//fmt.Printf("Checking Spot @ (x,y): (%d,%d)\n", x, y)
 
-	testUp, testDown, testRight, testLeft := true, true, true, true
-	//edge cases, lol, get it?
-	if x == 0 {
-		//fmt.Printf("testLeft false\n")
-		testLeft = false
-	}
-	if x == len(input[0])-1 {
-		//fmt.Printf("testRight false\n")
-		testRight = false
-	}
-	if y == 0 {
-		//fmt.Printf("testUp false\n")
-		testUp = false
-	}
-	if y == len(input)-1 {
-		//fmt.Printf("testDown false\n")
-		testDown = false
-	}
-
-	if testUp {
-		//fmt.Printf("testUp\n")
-		check := input[y-1][x]
-		if check > cur && check != 9 {
-			foundBasinMembers := searchBasin([]int{x, y - 1})
-			basinMembers = append(basinMembers, foundBasinMembers...)
+	if searchedLocations[mapString] == 1 {
+		testUp, testDown, testRight, testLeft := true, true, true, true
+		//edge cases, lol, get it?
+		switch x {
+		case 0:
+			testLeft = false
+		case len(input[0]) - 1:
+			testRight = false
 		}
-	}
 
-	if testDown {
-		//fmt.Printf("testDown\n")
-		check := input[y+1][x]
-		if check > cur && check != 9 {
-			foundBasinMembers := searchBasin([]int{x, y + 1})
-			basinMembers = append(basinMembers, foundBasinMembers...)
+		switch y {
+		case 0:
+			testUp = false
+		case len(input) - 1:
+			testDown = false
 		}
-	}
 
-	if testLeft {
-		//fmt.Printf("testLeft\n")
-		check := input[y][x-1]
-		if check > cur && check != 9 {
-			foundBasinMembers := searchBasin([]int{x - 1, y})
-			basinMembers = append(basinMembers, foundBasinMembers...)
+		if testUp {
+			//fmt.Printf("testUp\n")
+			check := input[y-1][x]
+			if check > cur && check != 9 {
+				foundBasinMembers := searchBasin(input, []int{x, y - 1}, searchedLocations)
+				basinMembers = append(basinMembers, foundBasinMembers...)
+			}
 		}
-	}
 
-	if testRight {
-		//fmt.Printf("testRight\n")
-		check := input[y][x+1]
-		if check > cur && check != 9 {
-			foundBasinMembers := searchBasin([]int{x + 1, y})
-			basinMembers = append(basinMembers, foundBasinMembers...)
+		if testDown {
+			//fmt.Printf("testDown\n")
+			check := input[y+1][x]
+			if check > cur && check != 9 {
+				foundBasinMembers := searchBasin(input, []int{x, y + 1}, searchedLocations)
+				basinMembers = append(basinMembers, foundBasinMembers...)
+			}
 		}
-	}
 
-	//fmt.Printf("Appending (%d,%d) to found\n", x, y)
-	basinMembers = append(basinMembers, []int{x, y})
+		if testLeft {
+			//fmt.Printf("testLeft\n")
+			check := input[y][x-1]
+			if check > cur && check != 9 {
+				foundBasinMembers := searchBasin(input, []int{x - 1, y}, searchedLocations)
+				basinMembers = append(basinMembers, foundBasinMembers...)
+			}
+		}
+
+		if testRight {
+			//fmt.Printf("testRight\n")
+			check := input[y][x+1]
+			if check > cur && check != 9 {
+				foundBasinMembers := searchBasin(input, []int{x + 1, y}, searchedLocations)
+				basinMembers = append(basinMembers, foundBasinMembers...)
+			}
+		}
+
+		//fmt.Printf("Appending (%d,%d) to found\n", x, y)
+		basinMembers = append(basinMembers, []int{x, y})
+	}
 
 	return basinMembers
 }
 
 func part2(lowSpots [][]int) {
+	input := parseInput()
 	var basinSizes []int
 
 	for _, lowSpot := range lowSpots {
-		basinMap := make(map[string]int)
+		searchedLocations := make(map[string]int)
 
-		foundMembers := searchBasin(lowSpot)
+		foundMembers := searchBasin(input, lowSpot, searchedLocations)
 		//fmt.Printf("For basin (%d,%d) found members:%#v\n", lowSpot[0], lowSpot[1], foundMembers)
 
-		for _, v := range foundMembers {
-			locStr := fmt.Sprintf("%d,%d", v[0], v[1])
-			basinMap[locStr] = basinMap[locStr] + 1
-		}
-
-		basinSize := len(basinMap)
+		basinSize := len(foundMembers)
 		//fmt.Printf("Basin Size found: %d\n", basinSize)
 		basinSizes = append(basinSizes, basinSize)
 	}
