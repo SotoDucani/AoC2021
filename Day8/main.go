@@ -52,6 +52,25 @@ func part1() {
 	fmt.Printf("Part 1 - Count: %v\n", count)
 }
 
+func findSharedSegments(knownNumber string, unknownNumber string) int {
+	count := 0
+	sharedMap := make(map[string]int)
+	unknownEncodedSegments := read.StrToCharArray(unknownNumber)
+	knownEncodedSegments := read.StrToCharArray(knownNumber)
+
+	for _, char := range unknownEncodedSegments {
+		sharedMap[char] = sharedMap[char] + 1
+	}
+	for _, char := range knownEncodedSegments {
+		sharedMap[char] = sharedMap[char] + 1
+		if sharedMap[char] == 2 {
+			count = count + 1
+		}
+	}
+
+	return count
+}
+
 func part2() {
 	input := parseInput()
 
@@ -90,69 +109,23 @@ func part2() {
 			if len(encodedNumber) == 2 || len(encodedNumber) == 4 || len(encodedNumber) == 3 || len(encodedNumber) == 7 {
 				// Do nothing
 			} else {
-				// Char array for our current unknown
-				unknownEncodedSegments := read.StrToCharArray(encodedNumber)
-
 				// Shared segments with 1
-				oneEncodedSegments := read.StrToCharArray(knownNumber["1"])
-				oneMap := make(map[string]int)
-				oneCount := 0
-				for _, char := range unknownEncodedSegments {
-					oneMap[char] = oneMap[char] + 1
-				}
-				for _, char := range oneEncodedSegments {
-					oneMap[char] = oneMap[char] + 1
-					if oneMap[char] == 2 {
-						oneCount = oneCount + 1
-					}
-				}
+				oneCount := findSharedSegments(knownNumber["1"], encodedNumber)
 
 				// Shared segments with 4
-				fourEncodedSegments := read.StrToCharArray(knownNumber["4"])
-				fourMap := make(map[string]int)
-				fourCount := 0
-				for _, char := range unknownEncodedSegments {
-					fourMap[char] = fourMap[char] + 1
-				}
-				for _, char := range fourEncodedSegments {
-					fourMap[char] = fourMap[char] + 1
-					if fourMap[char] == 2 {
-						fourCount = fourCount + 1
-					}
-				}
+				fourCount := findSharedSegments(knownNumber["4"], encodedNumber)
 
 				// Shared segments with 7
-				sevenEncodedSegments := read.StrToCharArray(knownNumber["7"])
-				sevenMap := make(map[string]int)
-				sevenCount := 0
-				for _, char := range unknownEncodedSegments {
-					sevenMap[char] = sevenMap[char] + 1
-				}
-				for _, char := range sevenEncodedSegments {
-					sevenMap[char] = sevenMap[char] + 1
-					if sevenMap[char] == 2 {
-						sevenCount = sevenCount + 1
-					}
-				}
+				sevenCount := findSharedSegments(knownNumber["7"], encodedNumber)
 
 				// Shared segments with 8
-				eightEncodedSegments := read.StrToCharArray(knownNumber["8"])
-				eightMap := make(map[string]int)
-				eightCount := 0
-				for _, char := range unknownEncodedSegments {
-					eightMap[char] = eightMap[char] + 1
-				}
-				for _, char := range eightEncodedSegments {
-					eightMap[char] = eightMap[char] + 1
-					if eightMap[char] == 2 {
-						eightCount = eightCount + 1
-					}
-				}
+				eightCount := findSharedSegments(knownNumber["8"], encodedNumber)
 
 				uniqueID := fmt.Sprintf("%v%v%v%v", oneCount, fourCount, sevenCount, eightCount)
 
 				//fmt.Printf("Unique ID for %v: %v%v%v%v\n", encodedNumber, oneCount, fourCount, sevenCount, eightCount)
 
+				// Based of some by-hand work to identify the unique number of shared segments with the known numbers
 				if uniqueID == "2336" {
 					// 0
 					knownNumber["0"] = encodedNumber
@@ -188,19 +161,9 @@ func part2() {
 
 			// Look for 100% segment match to a known number
 			for k, knownNumberStr := range knownNumber {
-				matchCount := 0
 				knownEncodedSegments := read.StrToCharArray(knownNumberStr)
-				knownMap := make(map[string]int)
 				if len(knownEncodedSegments) == len(unknownEncodedSegments) {
-					for _, char := range unknownEncodedSegments {
-						knownMap[char] = knownMap[char] + 1
-					}
-					for _, char := range knownEncodedSegments {
-						knownMap[char] = knownMap[char] + 1
-						if knownMap[char] == 2 {
-							matchCount = matchCount + 1
-						}
-					}
+					matchCount := findSharedSegments(knownNumberStr, encodedOutput)
 					if matchCount == len(unknownEncodedSegments) {
 						//fmt.Printf("    Output Segment %#v is a %v\n", encodedOutput, k)
 						decodedOutput = decodedOutput + k
